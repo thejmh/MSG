@@ -1,0 +1,6 @@
+{
+  "name": "Project MSG - Meridian Symptom Guide",
+  "description": "Personalized AR meridian massage guide system. Phase 1: Logic Layer for diagnosis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
