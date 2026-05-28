@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem.UI;
 using MSG.Services;
 using MSG.Models;
 
@@ -134,8 +135,8 @@ namespace MSG.AR
             {
                 var eventSystemGo = new GameObject("EventSystem");
                 eventSystemGo.AddComponent<UnityEngine.EventSystems.EventSystem>();
-                eventSystemGo.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
-                Debug.Log("[ARHUDController] EventSystem 자동 생성 완료.");
+                eventSystemGo.AddComponent<InputSystemUIInputModule>();
+                Debug.Log("[ARHUDController] EventSystem (InputSystem) 자동 생성 완료.");
             }
 
             var canvasGo = new GameObject("AR_HUD_Canvas");

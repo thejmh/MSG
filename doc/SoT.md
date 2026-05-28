@@ -153,9 +153,28 @@
 
 ## 19. Recommended Next Priorities (다음 우선순위)
 
-1. **[Phase 1]** Angular `DiagnosisStateService` 내부의 RxJS 기반 상태 머신 코어 로직 작성.
-2. **[Phase 1]** `HandoffService` 내 JSON 직렬화 및 Base64URL 인코더 유닛 테스트 작성.
-3. **[Phase 2]** Unity `DeepLinkReceiver.cs` 생성 및 Android Intent 연동 파싱 로직 테스트.
+1. **[Unity Editor]** `MSG > [SETUP] Full Project Setup (Run This First)` 메뉴 실행 → OptionButton 프리팹 생성 + 씬 자동 빌드.
+2. **[Unity Editor]** `MSG > Parse Acupoints CSV` 실행 → `AcupointDB.asset` 생성.
+3. **[Unity Editor]** AR Foundation 5.0+, ARCore XR Plugin 패키지 설치 (Package Manager).
+4. **[Android Build]** File > Build Settings > Android 플랫폼 전환 후 빌드.
+5. **[Phase 2 확장]** MediaPipe 자동 랜드마크 감지 도입 (수동 탭 → 자동 감지).
+
+## 20. Implementation Status (구현 현황 — 최종 업데이트)
+
+| 항목 | 상태 | 비고 |
+|------|------|------|
+| decision-tree.json (26개 결과 노드) | ✅ 완료 | |
+| diagnostics.json (26개 처방 패키지) | ✅ 완료 | 혈자리 처방 데이터 완비 |
+| AcupointCunOffset 테이블 | ✅ 완료 | 131개 등록, 처방 49개 전부 커버 |
+| Unity 서비스 레이어 (C# 코드) | ✅ 완료 | |
+| Unity UI 레이어 (C# 코드) | ✅ 완료 | |
+| Unity AR 레이어 (C# 코드) | ✅ 완료 | |
+| SceneBuilder 에디터 스크립트 | ✅ 완료 | MSG > Build All Scenes |
+| PrefabBuilder 에디터 스크립트 | ✅ 완료 | MSG > Build OptionButton Prefab |
+| AndroidManifest.xml | ✅ 완료 | msg-app:// 딥링크 + 카메라 권한 |
+| Unity 씬 파일 와이어링 | ⏳ 대기 | Editor에서 MSG > [SETUP] 실행 필요 |
+| AR Foundation 패키지 설치 | ⏳ 대기 | Package Manager에서 수동 설치 |
+| 실기기 빌드 테스트 | ⏳ 대기 | |
 
 ## 20. Final Principle (궁극의 본질과 방어선)
 

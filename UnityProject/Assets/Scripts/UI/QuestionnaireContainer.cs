@@ -47,6 +47,14 @@ namespace MSG.UI
             questionCard?.Hide();
             resultCard?.Hide();
 
+            // DataFetchService 인스턴스 null 방어
+            if (DataFetchService.Instance == null)
+            {
+                Debug.LogError("[QuestionnaireContainer] DataFetchService.Instance가 null입니다. " +
+                               "씬에 DataFetchService 오브젝트가 있는지 확인하세요.");
+                return;
+            }
+
             // DataFetchService 로드 완료 후 시작
             if (DataFetchService.Instance.IsLoaded)
                 OnDataLoaded();
@@ -57,6 +65,14 @@ namespace MSG.UI
         private void OnDataLoaded()
         {
             loadingUI?.Hide();
+
+            // DiagnosisStateService 인스턴스 null 방어
+            if (DiagnosisStateService.Instance == null)
+            {
+                Debug.LogError("[QuestionnaireContainer] DiagnosisStateService.Instance가 null입니다. " +
+                               "씬에 DiagnosisStateService 오브젝트가 있는지 확인하세요.");
+                return;
+            }
 
             // 상태 서비스 구독
             _state = DiagnosisStateService.Instance;

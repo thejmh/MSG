@@ -1,16 +1,25 @@
 // ─────────────────────────────────────────────────────────────────────────
-//  DiagnosisManager.cs — 초기 프로토타입 (레거시 호환)
+//  DiagnosisManager.cs — 레거시 (비활성화됨)
 //
-//  ⚠️  정식 아키텍처: DataFetchService + DiagnosisStateService + HandoffService
-//       (Scripts/Services/ 폴더 참조)
-//  모든 데이터 모델은 MSG.Models (MSGModels.cs)에 있습니다.
+//  ⚠️  이 스크립트는 초기 프로토타입입니다. 현재 아키텍처에서는 사용하지 않습니다.
+//
+//  정식 아키텍처:
+//    - DataFetchService + DiagnosisStateService + HandoffService (Scripts/Services/)
+//    - QuestionnaireContainer + QuestionCardUI + ResultCardUI (Scripts/UI/)
+//
+//  이 파일을 씬에 추가하지 마세요. 추가 시 NullReferenceException 크래시 발생.
 // ─────────────────────────────────────────────────────────────────────────
+
+// 전체 클래스를 LEGACY_DISABLED 심볼로 비활성화
+// (삭제 대신 보존 — 레거시 참조용)
+#if LEGACY_DIAGNOSIS_MANAGER_ENABLED
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using MSG.Models;    // DiagnosisQuestion, DiagnosisOption, DiagnosticResult, MeridianPoint
-using MSG.Services;  // HandoffData, HandoffPayload, JsonHelper
+using MSG.Models;
+using MSG.Services;
 
 public class DiagnosisManager : MonoBehaviour
 {
@@ -72,7 +81,6 @@ public class DiagnosisManager : MonoBehaviour
         DiagnosticResult res = results?.Find(x => x.id == resId);
         if (res == null) return;
 
-        // ✅ FindFirstObjectByType 사용 (CS0618 경고 해소)
         HandoffData handoff = FindFirstObjectByType<HandoffData>();
         if (handoff == null)
         {
@@ -80,7 +88,6 @@ public class DiagnosisManager : MonoBehaviour
             handoff = obj.AddComponent<HandoffData>();
         }
 
-        // MSG.Services.HandoffData.payload 사용 (CS1061 에러 해소)
         handoff.payload = new HandoffPayload
         {
             dId = res.id,
@@ -91,4 +98,5 @@ public class DiagnosisManager : MonoBehaviour
         SceneManager.LoadScene("ARScene");
     }
 }
-// ※ DiagnosisOption / DiagnosisQuestion 정의 제거 → MSG.Models (MSGModels.cs)로 통합
+
+#endif

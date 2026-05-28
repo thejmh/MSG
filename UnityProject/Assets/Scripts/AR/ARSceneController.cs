@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using UnityEngine.InputSystem;
 using MSG.Services;
 using MSG.Models;
 
@@ -112,17 +113,27 @@ namespace MSG.AR
             if (arSession != null)
                 arSession.enabled = true;
 
+            // ── DataFetchService 자동 보장 ────────────────────────────
+            // ARScene에 DataFetchService가 없으면 자동 생성 (DontDestroyOnLoad로 넘어오지 않은 경우 대비)
+            if (DataFetchService.Instance == null)
+            {
+                var svcGo = new GameObject("DataFetchService_AutoSpawned");
+                svcGo.AddComponent<DataFetchService>();
+                Debug.LogWarning("[ARSceneController] DataFetchService 자동 생성. " +
+                                 "DiagnosisScene에서 넘어온 경우 정상. 직접 ARScene 실행 시 데이터 로드 대기 필요.");
+            }
+
             // 에디터 전용: 가상 페이로드 주입 (단독 재생 테스트용)
             if (Application.isEditor && (HandoffData.Instance == null || HandoffData.Instance.payload == null))
             {
                 HandoffData.Instance.payload = new HandoffPayload
                 {
-                    dId = "res_dig_02",
+                    dId = "res_lower_back",
                     pts = new List<MeridianPoint>
                     {
-                        new MeridianPoint { id = 11, i = 1, m = 1 }, // 소상혈
-                        new MeridianPoint { id = 12, i = 0, m = 2 }, // 어제혈
-                        new MeridianPoint { id = 13, i = 1, m = 3 }  // 태연혈
+                        new MeridianPoint { id = 148, i = 1, m = 1 }, // 신유
+                        new MeridianPoint { id = 165, i = 1, m = 1 }, // 위중
+                        new MeridianPoint { id = 337, i = 0, m = 2 }  // 명문
                     }
                 };
                 Debug.Log("[ARSceneController] 에디터 가상 페이로드 주입 완료.");
@@ -132,12 +143,25 @@ namespace MSG.AR
             if (HandoffData.Instance?.payload != null)
             {
                 _payload = HandoffData.Instance.payload;
-                BeginCalibration();
+                // DataFetchService 로드 완료 후 캘리브레이션 시작
+                if (DataFetchService.Instance != null && DataFetchService.Instance.IsLoaded)
+                    BeginCalibration();
+                else if (DataFetchService.Instance != null)
+                    DataFetchService.Instance.OnDataLoaded += OnDataServiceLoaded;
+                else
+                    BeginCalibration(); // 최후 폴백
             }
             else if (deepLinkReceiver != null)
             {
                 deepLinkReceiver.OnPayloadReceived += OnPayloadReceived;
             }
+        }
+
+        private void OnDataServiceLoaded()
+        {
+            if (DataFetchService.Instance != null)
+                DataFetchService.Instance.OnDataLoaded -= OnDataServiceLoaded;
+            BeginCalibration();
         }
 
         private void OnPayloadReceived(HandoffPayload payload)
@@ -165,7 +189,7 @@ namespace MSG.AR
             Debug.Log("[ARSceneController] 캘리브레이션 시작 → 손목 탭 대기");
         }
 
-        // ── 입력 처리 (터치 & 에디터 마우스) ────────────────────────
+        // ── 입력 처리 (Input System Package) ────────────────────────
         private void Update()
         {
             // 가이드 안내 팝업이 떠 있는 동안에는 입력을 처리하지 않음
@@ -176,18 +200,23 @@ namespace MSG.AR
                 _state != CalibrationState.WaitingForElbow)
                 return;
 
-            // 터치 입력 (실제 기기)
-            if (Input.touchCount > 0)
+            // 터치 입력 (Input System 터치스크린)
+            var touchscreen = Touchscreen.current;
+            if (touchscreen != null)
             {
-                var touch = Input.GetTouch(0);
-                if (touch.phase == TouchPhase.Began)
-                    HandleTap(touch.position);
+                var primaryTouch = touchscreen.primaryTouch;
+                if (primaryTouch.press.wasPressedThisFrame)
+                {
+                    Vector2 pos = primaryTouch.position.ReadValue();
+                    HandleTap(pos);
+                }
                 return;
             }
 
             // 마우스 클릭 (에디터 시뮬레이션)
-            if (Application.isEditor && Input.GetMouseButtonDown(0))
-                HandleTap(Input.mousePosition);
+            var mouse = Mouse.current;
+            if (Application.isEditor && mouse != null && mouse.leftButton.wasPressedThisFrame)
+                HandleTap(mouse.position.ReadValue());
         }
 
         private void HandleTap(Vector2 screenPos)
