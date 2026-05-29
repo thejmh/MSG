@@ -1,0 +1,10 @@
+node_modules
+dist
+.git
+.gitignore
+UnityProject
+.gemini
+build.log
+logcat.txt
+logcat.txt.resolved
+*.log
