@@ -140,14 +140,21 @@ export class AnatomyMapComponent implements OnInit, OnChanges {
     return this.points.filter(p => p.acupoint.region === region).length;
   }
 
+  private getBaseHref(): string {
+    if (typeof document === 'undefined') return '';
+    const baseEl = document.getElementsByTagName('base')[0];
+    return baseEl ? baseEl.getAttribute('href') || '' : '';
+  }
+
   getRegionImage(region: string): string {
+    const base = this.getBaseHref();
     switch (region) {
-      case 'head': return 'head_anatomy.png';
-      case 'front_body': return 'front_body_anatomy.png';
-      case 'back_body': return 'back_body_anatomy.png';
-      case 'arm': return 'arm_anatomy.png';
-      case 'leg': return 'leg_anatomy.png';
-      default: return 'head_anatomy.png';
+      case 'head': return `${base}head_anatomy.png`;
+      case 'front_body': return `${base}front_body_anatomy.png`;
+      case 'back_body': return `${base}back_body_anatomy.png`;
+      case 'arm': return `${base}arm_anatomy.png`;
+      case 'leg': return `${base}leg_anatomy.png`;
+      default: return `${base}head_anatomy.png`;
     }
   }
 }

@@ -53,15 +53,22 @@ export class DataService {
   private acupoints: Acupoint[] = [];
   private isLoaded = false;
 
+  private getBaseHref(): string {
+    if (typeof document === 'undefined') return '';
+    const baseEl = document.getElementsByTagName('base')[0];
+    return baseEl ? baseEl.getAttribute('href') || '' : '';
+  }
+
   loadAllData(): Observable<boolean> {
     if (this.isLoaded) {
       return of(true);
     }
 
+    const base = this.getBaseHref();
     return forkJoin({
-      questions: this.http.get<Question[]>('logic-tree.json'),
-      diagnosticsList: this.http.get<DiagnosticResult[]>('diagnostics.json'),
-      acupoints: this.http.get<Acupoint[]>('acupoints.json')
+      questions: this.http.get<Question[]>(`${base}logic-tree.json`),
+      diagnosticsList: this.http.get<DiagnosticResult[]>(`${base}diagnostics.json`),
+      acupoints: this.http.get<Acupoint[]>(`${base}acupoints.json`)
     }).pipe(
       tap(({ questions, diagnosticsList, acupoints }) => {
         this.questions = questions;
