@@ -142,12 +142,12 @@ export class AnatomyMapComponent implements OnInit, OnChanges {
 
   getRegionImage(region: string): string {
     switch (region) {
-      case 'head': return '/head_anatomy.png';
-      case 'front_body': return '/front_body_anatomy.png';
-      case 'back_body': return '/back_body_anatomy.png';
-      case 'arm': return '/arm_anatomy.png';
-      case 'leg': return '/leg_anatomy.png';
-      default: return '/head_anatomy.png';
+      case 'head': return 'head_anatomy.png';
+      case 'front_body': return 'front_body_anatomy.png';
+      case 'back_body': return 'back_body_anatomy.png';
+      case 'arm': return 'arm_anatomy.png';
+      case 'leg': return 'leg_anatomy.png';
+      default: return 'head_anatomy.png';
     }
   }
 }

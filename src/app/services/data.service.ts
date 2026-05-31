@@ -59,9 +59,9 @@ export class DataService {
     }
 
     return forkJoin({
-      questions: this.http.get<Question[]>('/logic-tree.json'),
-      diagnosticsList: this.http.get<DiagnosticResult[]>('/diagnostics.json'),
-      acupoints: this.http.get<Acupoint[]>('/acupoints.json')
+      questions: this.http.get<Question[]>('logic-tree.json'),
+      diagnosticsList: this.http.get<DiagnosticResult[]>('diagnostics.json'),
+      acupoints: this.http.get<Acupoint[]>('acupoints.json')
     }).pipe(
       tap(({ questions, diagnosticsList, acupoints }) => {
         this.questions = questions;
